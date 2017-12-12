@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ==============================================================================
-r"""Converts Images data folder to TFRecords of TF-Example protos.
+r"""Converts Image data folder to TFRecords of TF-Example protos.
 
 This module reads the files that make up the Image data folder and creates two TFRecord datasets:
 one for train and one for test. Each TFRecord dataset is comprised of a set of TF-Example
@@ -35,7 +35,7 @@ import tensorflow as tf
 
 from datasets import dataset_utils
 
-# The percentege of images in the train set.
+# The percentage of images in the train set.
 _PERC_TRAIN = 0.8
 
 # Seed for repeatability.
@@ -92,13 +92,12 @@ def _get_filenames_and_classes(dataset_dir):
     files = os.listdir(directory)
     random.seed(_RANDOM_SEED)
     random.shuffle(files)
-    for filename in files[int(_PERC_TRAIN * len(files)):]:
+    for i, filename in enumerate(files):
       path = os.path.join(directory, filename)
-      validation_filenames.append(path)
-    for filename in files[:int(_PERC_TRAIN * len(files))]:
-      path = os.path.join(directory, filename)
-      training_filenames.append(path)
-
+      if i < int(_PERC_TRAIN * len(files)):
+          training_filenames.append(path)
+      else:
+          validation_filenames.append(path)
 
   return training_filenames, validation_filenames, sorted(class_names)
 
