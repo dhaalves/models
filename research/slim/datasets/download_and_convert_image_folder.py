@@ -35,7 +35,7 @@ import tensorflow as tf
 
 from datasets import dataset_utils
 
-# The number of images in the validation set.
+# The percentege of images in the train set.
 _PERC_TRAIN = 0.8
 
 # Seed for repeatability.
