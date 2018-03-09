@@ -19,7 +19,8 @@ from __future__ import division
 from __future__ import print_function
 
 import tensorflow as tf
-from nets import dcgan
+import dcgan
+# from nets import dcgan
 
 
 class DCGANTest(tf.test.TestCase):
@@ -36,7 +37,7 @@ class DCGANTest(tf.test.TestCase):
     tf.set_random_seed(1234)
     # Check graph construction for a number of image size/depths and batch
     # sizes.
-    for i, batch_size in zip(xrange(3, 7), xrange(3, 8)):
+    for i, batch_size in zip(range(3, 7), range(3, 8)):
       tf.reset_default_graph()
       final_size = 2 ** i
       noise = tf.random_normal([batch_size, 64])
@@ -48,7 +49,7 @@ class DCGANTest(tf.test.TestCase):
       self.assertAllEqual([batch_size, final_size, final_size, 3],
                           image.shape.as_list())
 
-      expected_names = ['deconv%i' % j for j in xrange(1, i)] + ['logits']
+      expected_names = ['deconv%i' % j for j in range(1, i)] + ['logits']
       self.assertSetEqual(set(expected_names), set(end_points.keys()))
 
       # Check layer depths.
@@ -78,7 +79,7 @@ class DCGANTest(tf.test.TestCase):
   def test_discriminator_graph(self):
     # Check graph construction for a number of image size/depths and batch
     # sizes.
-    for i, batch_size in zip(xrange(1, 6), xrange(3, 8)):
+    for i, batch_size in zip(range(1, 6), range(3, 8)):
       tf.reset_default_graph()
       img_w = 2 ** i
       image = tf.random_uniform([batch_size, img_w, img_w, 3], -1, 1)
@@ -88,7 +89,7 @@ class DCGANTest(tf.test.TestCase):
 
       self.assertAllEqual([batch_size, 1], output.get_shape().as_list())
 
-      expected_names = ['conv%i' % j for j in xrange(1, i+1)] + ['logits']
+      expected_names = ['conv%i' % j for j in range(1, i+1)] + ['logits']
       self.assertSetEqual(set(expected_names), set(end_points.keys()))
 
       # Check layer depths.
@@ -113,6 +114,6 @@ class DCGANTest(tf.test.TestCase):
     with self.assertRaisesRegexp(ValueError, 'not a power of 2'):
       dcgan.discriminator(not_power_2)
 
-
 if __name__ == '__main__':
+
   tf.test.main()

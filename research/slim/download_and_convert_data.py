@@ -20,7 +20,7 @@ Usage:
 $ python download_and_convert_data.py \
     --dataset_name=mnist \
     --dataset_dir=/tmp/mnist
-
+e
 $ python download_and_convert_data.py \
     --dataset_name=cifar10 \
     --dataset_dir=/tmp/cifar10
@@ -50,8 +50,13 @@ tf.app.flags.DEFINE_string(
 
 tf.app.flags.DEFINE_string(
     'dataset_dir',
-    '/home/daniel/Downloads/leaves',
+    '/mnt/sda1/parasites/parasites_16',
     'The directory where the output TFRecords and temporary files are saved.')
+
+tf.app.flags.DEFINE_string(
+    'perc_train',
+     0.8,
+    '')
 
 
 def main(_):
@@ -67,7 +72,7 @@ def main(_):
     elif FLAGS.dataset_name == 'mnist':
         download_and_convert_mnist.run(FLAGS.dataset_dir)
     elif FLAGS.dataset_name == 'image_folder':
-        convert_image_folder.run(FLAGS.dataset_dir)
+        convert_image_folder.run(FLAGS.dataset_dir, FLAGS.perc_train)
     else:
         raise ValueError(
             'dataset_name [%s] was not recognized.' % FLAGS.dataset_name)

@@ -65,7 +65,7 @@ class ImageReader(object):
     return image
 
 
-def _get_filenames_and_classes(dataset_dir):
+def _get_filenames_and_classes(dataset_dir, perc_train):
   """Returns a list of filenames and inferred class names.
 
   Args:
@@ -94,7 +94,7 @@ def _get_filenames_and_classes(dataset_dir):
     random.shuffle(files)
     for i, filename in enumerate(files):
       path = os.path.join(directory, filename)
-      if i < int(_PERC_TRAIN * len(files)):
+      if i < int(perc_train * len(files)):
           training_filenames.append(path)
       else:
           validation_filenames.append(path)
@@ -164,7 +164,7 @@ def _dataset_exists(dataset_dir):
   return True
 
 
-def run(dataset_dir):
+def run(dataset_dir, perc_train=0.8):
   """Runs the conversion operation.
 
   Args:
@@ -177,7 +177,7 @@ def run(dataset_dir):
     print('Dataset files already exist. Exiting without re-creating them.')
     return
 
-  training_filenames, validation_filenames, class_names = _get_filenames_and_classes(dataset_dir)
+  training_filenames, validation_filenames, class_names = _get_filenames_and_classes(dataset_dir, perc_train)
   class_names_to_ids = dict(zip(class_names, range(len(class_names))))
 
   # First, convert the training and validation sets.
@@ -188,6 +188,10 @@ def run(dataset_dir):
 
   # Finally, write the labels file:
   labels_to_class_names = dict(zip(range(len(class_names)), class_names))
-  dataset_utils.write_label_file(labels_to_class_names, dataset_dir)
+  dataset_utils.write_label_file(labels_to_class_names, dataset_dir,
+                                 filename='labels_' +
+                                          str(len(class_names)) + '_' +
+                                          str(len(training_filenames)) + '_' +
+                                          str(len(validation_filenames)) + '_.txt')
 
   print('\nFinished converting the dataset!')

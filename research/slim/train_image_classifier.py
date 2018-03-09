@@ -31,7 +31,7 @@ tf.app.flags.DEFINE_string(
     'master', '', 'The address of the TensorFlow master to use.')
 
 tf.app.flags.DEFINE_string(
-    'train_dir', '/tmp/tfmodel/',
+    'train_dir', '/tmp/tfmodel/lenet',
     'Directory where checkpoints and event logs are written to.')
 
 tf.app.flags.DEFINE_integer('num_clones', 1,
@@ -48,11 +48,11 @@ tf.app.flags.DEFINE_integer(
     'are handled locally by the worker.')
 
 tf.app.flags.DEFINE_integer(
-    'num_readers', 4,
+    'num_readers', 8,
     'The number of parallel readers that read data from the dataset.')
 
 tf.app.flags.DEFINE_integer(
-    'num_preprocessing_threads', 4,
+    'num_preprocessing_threads', 8,
     'The number of threads used to create the batches.')
 
 tf.app.flags.DEFINE_integer(
@@ -78,7 +78,7 @@ tf.app.flags.DEFINE_float(
     'weight_decay', 0.00004, 'The weight decay on the model weights.')
 
 tf.app.flags.DEFINE_string(
-    'optimizer', 'rmsprop',
+    'optimizer', 'adam',
     'The name of the optimizer, one of "adadelta", "adagrad", "adam",'
     '"ftrl", "momentum", "sgd" or "rmsprop".')
 
@@ -165,13 +165,13 @@ tf.app.flags.DEFINE_float(
 #######################
 
 tf.app.flags.DEFINE_string(
-    'dataset_name', 'imagenet', 'The name of the dataset to load.')
+    'dataset_name', 'image_folder', 'The name of the dataset to load.')
 
 tf.app.flags.DEFINE_string(
     'dataset_split_name', 'train', 'The name of the train/test split.')
 
 tf.app.flags.DEFINE_string(
-    'dataset_dir', None, 'The directory where the dataset files are stored.')
+    'dataset_dir', '/mnt/sda1/parasites/parasites_16', 'The directory where the dataset files are stored.')
 
 tf.app.flags.DEFINE_integer(
     'labels_offset', 0,
@@ -180,19 +180,19 @@ tf.app.flags.DEFINE_integer(
     'class for the ImageNet dataset.')
 
 tf.app.flags.DEFINE_string(
-    'model_name', 'inception_v3', 'The name of the architecture to train.')
+    'model_name', 'lenet', 'The name of the architecture to train.')
 
 tf.app.flags.DEFINE_string(
     'preprocessing_name', None, 'The name of the preprocessing to use. If left '
     'as `None`, then the model_name flag is used.')
 
 tf.app.flags.DEFINE_integer(
-    'batch_size', 32, 'The number of samples in each batch.')
+    'batch_size', 10, 'The number of samples in each batch.')
 
 tf.app.flags.DEFINE_integer(
     'train_image_size', None, 'Train image size')
 
-tf.app.flags.DEFINE_integer('max_number_of_steps', None,
+tf.app.flags.DEFINE_integer('max_number_of_steps', 50000,
                             'The maximum number of training steps.')
 
 #####################
@@ -200,16 +200,16 @@ tf.app.flags.DEFINE_integer('max_number_of_steps', None,
 #####################
 
 tf.app.flags.DEFINE_string(
-    'checkpoint_path', None,
+    'checkpoint_path', None, #'/home/daniel/Downloads/inception_v3_2016_08_28/inception_v3.ckpt',
     'The path to a checkpoint from which to fine-tune.')
 
 tf.app.flags.DEFINE_string(
-    'checkpoint_exclude_scopes', None,
+    'checkpoint_exclude_scopes', None, #''InceptionV3/Logits,InceptionV3/AuxLogits',
     'Comma-separated list of scopes of variables to exclude when restoring '
     'from a checkpoint.')
 
 tf.app.flags.DEFINE_string(
-    'trainable_scopes', None,
+    'trainable_scopes', None, #''InceptionV3/Logits,InceptionV3/AuxLogits',
     'Comma-separated list of scopes to filter the set of variables to train.'
     'By default, None would train all the variables.')
 
@@ -414,6 +414,8 @@ def main(_):
         weight_decay=FLAGS.weight_decay,
         is_training=True)
 
+
+
     #####################################
     # Select the preprocessing function #
     #####################################
@@ -548,6 +550,7 @@ def main(_):
     # created by model_fn and either optimize_clones() or _gather_clone_loss().
     summaries |= set(tf.get_collection(tf.GraphKeys.SUMMARIES,
                                        first_clone_scope))
+
 
     # Merge all summaries together.
     summary_op = tf.summary.merge(list(summaries), name='summary_op')
