@@ -28,7 +28,11 @@ from preprocessing import preprocessing_factory
 slim = tf.contrib.slim
 
 tf.app.flags.DEFINE_integer(
+<<<<<<< HEAD
     'batch_size', 11000, 'The number of samples in each batch.')
+=======
+    'batch_size', 100, 'The number of samples in each batch.')
+>>>>>>> upstream/master
 
 tf.app.flags.DEFINE_integer(
     'max_num_batches', None,
